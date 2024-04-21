@@ -1,0 +1,239 @@
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| company            |
+| company_database   |
+| demo_db            |
+| information_schema |
+| mysql              |
+| performance_schema |
+| student_database   |
+| sys                |
++--------------------+
+8 rows in set (0.00 sec)
+
+mysql> use company_database;
+Database changed
+mysql> CREATE TABLE Department
+    -> (dep_id int NOT NULL auto_increment,
+    -> Name varchar(25),
+    -> primary key(dep_id));
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> CREATE TABLE Employees
+    -> (emp_id int NOt NULL auto_increment,
+    -> name varchar(25),
+    -> dep int NOT NULL,
+    -> primary key (emp_id),
+    -> foreign key (dep) REFERENCES Department (dep_id) ON DELETE CASCADE;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '' at line 6
+mysql> CREATE TABLE Employees
+    -> (emp_id int NOT NULL auto_increment,
+    -> name varchar(25),
+    -> dep int NOT NULL,
+    -> primary key (emp_id),
+    -> foreign key(dep) REFERENCES Department(dep_id) ON DELETE CASCADE);
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> INSERT INTO Department(dep_id,name) VALUES (1,SALES);
+ERROR 1054 (42S22): Unknown column 'SALES' in 'field list'
+mysql> INSERT INTO Department(dep_id,name) VALUES(1,'SALES');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO Department(dep_id, name) VALUES(2,'CUSTOMERSERVICE');
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO Department(dep_id,name) VALUES(3,'BANKING');
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT* from Department;
++--------+-----------------+
+| dep_id | Name            |
++--------+-----------------+
+|      1 | SALES           |
+|      2 | CUSTOMERSERVICE |
+|      3 | BANKING         |
++--------+-----------------+
+3 rows in set (0.00 sec)
+
+mysql> INSERt INTO Employees(emp_id, name, dep) VALUES (1,'SARAH',1);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO Employees(emp_id,name,dep) VALUES(2,';MALIK',2);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> INSERT INTO Employees(emp_id,name,dep) VALUES(3,'AJEEB',3);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> SELECT * from Employees;
++--------+--------+-----+
+| emp_id | name   | dep |
++--------+--------+-----+
+|      1 | SARAH  |   1 |
+|      2 | ;MALIK |   2 |
+|      3 | AJEEB  |   3 |
++--------+--------+-----+
+3 rows in set (0.00 sec)
+
+mysql> ALTER TABLE Employees
+    -> ADD Salary int NOT NULL;
+Query OK, 0 rows affected (0.01 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> UPADTE Employees SET Salary =30000 WHERE emp_id=2;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'UPADTE Employees SET Salary =30000 WHERE emp_id=2' at line 1
+mysql> UPADTE Employees
+    -> SET Salary = 30000 WHERE emp_id = 2;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'UPADTE Employees
+SET Salary = 30000 WHERE emp_id = 2' at line 1
+mysql> UPDATE Table Employees
+    -> SET Salary =30000
+    -> WHERE emp_id = 2;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'Table Employees
+SET Salary =30000
+WHERE emp_id = 2' at line 1
+mysql> ALTER TABLE Employees
+    -> DROP COLUMN Emp_id;
+Query OK, 3 rows affected (0.02 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> SELECT *from Employees;
++--------+-----+--------+
+| name   | dep | Salary |
++--------+-----+--------+
+| SARAH  |   1 |      0 |
+| ;MALIK |   2 |      0 |
+| AJEEB  |   3 |      0 |
++--------+-----+--------+
+3 rows in set (0.00 sec)
+
+mysql> ALTER TABLE Employees
+    -> ADD emp_id int NOT NULL
+    -> Primary key(emp_id);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '(emp_id)' at line 3
+mysql> ALTER TABLE Employees
+    -> ADD emp_id int NOT NULL
+    -> ADD primary key(emp_id);
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'ADD primary key(emp_id)' at line 3
+mysql> ALTER TABLE Employees
+    -> ADD emp_id int NOT NULL;
+Query OK, 0 rows affected (0.00 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+
+mysql> SELECT * from Employees;
++--------+-----+--------+--------+
+| name   | dep | Salary | emp_id |
++--------+-----+--------+--------+
+| SARAH  |   1 |      0 |      0 |
+| ;MALIK |   2 |      0 |      0 |
+| AJEEB  |   3 |      0 |      0 |
++--------+-----+--------+--------+
+3 rows in set (0.00 sec)
+
+mysql> UPDATE Employees
+    -> SET emp_id =234
+    -> WHERE name='SARAH';
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE Employees
+    -> SET emp_id=345
+    -> WHERE name='AJEEB';
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE Employees
+    -> SET emp_id=567
+    -> WHERE name=';MALIK';
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT *from Employees;
++--------+-----+--------+--------+
+| name   | dep | Salary | emp_id |
++--------+-----+--------+--------+
+| SARAH  |   1 |      0 |    234 |
+| ;MALIK |   2 |      0 |    567 |
+| AJEEB  |   3 |      0 |    345 |
++--------+-----+--------+--------+
+3 rows in set (0.00 sec)
+
+mysql> UPDATE Employees
+    -> SET Salary=30000
+    -> WHERE emp_id=567;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE Employees
+    -> SET Salary=50000
+    -> WHERE emp_id=234;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> UPDATE Employees
+    -> SET Salary=20000
+    -> WHERE emp_id=345;
+Query OK, 1 row affected (0.00 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT *from Employees;
++--------+-----+--------+--------+
+| name   | dep | Salary | emp_id |
++--------+-----+--------+--------+
+| SARAH  |   1 |  50000 |    234 |
+| ;MALIK |   2 |  30000 |    567 |
+| AJEEB  |   3 |  20000 |    345 |
++--------+-----+--------+--------+
+3 rows in set (0.01 sec)
+
+mysql> DELETE FROM Employee
+    -> WHERE dep_id='CUSTMERSERVICE';
+ERROR 1146 (42S02): Table 'company_database.employee' doesn't exist
+mysql> DELETE FROM Department
+    -> WHERE dep_id='CUSTOMERSERVICE';
+ERROR 1292 (22007): Truncated incorrect DOUBLE value: 'CUSTOMERSERVICE'
+mysql> DELETE FROM Department
+    -> WHERE Name='CUSTOMERSERVICE'
+    -> ;
+Query OK, 1 row affected (0.00 sec)
+
+mysql> SELECT *from Emplopyees;
+ERROR 1146 (42S02): Table 'company_database.emplopyees' doesn't exist
+mysql> SELECT *from Employees;
++-------+-----+--------+--------+
+| name  | dep | Salary | emp_id |
++-------+-----+--------+--------+
+| SARAH |   1 |  50000 |    234 |
+| AJEEB |   3 |  20000 |    345 |
++-------+-----+--------+--------+
+2 rows in set (0.00 sec)
+
+mysql> SELECT *from Department;
++--------+---------+
+| dep_id | Name    |
++--------+---------+
+|      1 | SALES   |
+|      3 | BANKING |
++--------+---------+
+2 rows in set (0.00 sec)
+
+mysql> 
+mysql> show database;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'database' at line 1
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| company            |
+| company_database   |
+| demo_db            |
+| information_schema |
+| mysql              |
+| performance_schema |
+| student_database   |
+| sys                |
++--------------------+
+8 rows in set (0.01 sec)
+
+mysql>
